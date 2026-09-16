@@ -1,6 +1,8 @@
 # Placement Helper
 
-**LPU Placement Drive Dashboard & Pipeline** — An Electron app for LPU placement students to monitor and track placement drives automatically.
+**One app to automate your university placement portal — auto-fetch drives, track deadlines, view company details, and register. Everything in one place.**
+
+Placement Helper is a desktop app that replaces manually opening your placement portal every day. It automates the entire flow: fetches drive details automatically, shows company info and deadlines, lets you track status, and register for drives — all from a single dashboard. No more copy-pasting drive links or refreshing the portal by hand.
 
 ---
 
@@ -57,15 +59,21 @@ placement-helper/
 
 ## Screenshots
 
+### Dashboard — Main View
+
+![Placement Helper — Dashboard](screenshots/placement-helper-dashboard.png)
+
+The main dashboard view. Shows your placement drive overview, auto-fetched from your university placement portal. Everything in one place: company names, deadlines, drive types, and registration status. The app automatically fetches drive details so you don't have to open the portal manually.
+
 ### All Drives Page
 
 ![Placement Helper — All Drives](screenshots/placement-helper-all-drives.png)
 
-The "All Drives" page showing upcoming placement drives with time remaining, drive type filters, and status tabs (All / Open / Registered / Closed). Drives like PBNC PRIVATE LIMITED show hours remaining and notify when the drive date is set.
+The "All Drives" page showing upcoming placement drives with time remaining, drive type filters (Competitive Events, Full-Term Internships, On-Campus Drives, Summer Internships), and status tabs (All / Open / Registered / Closed). Drives like PBNC PRIVATE LIMITED show hours remaining and notify when the drive date is set.
 
 ---
 
-## Dependencies
+## Features
 
 | Package | Purpose |
 |---------|---------|
