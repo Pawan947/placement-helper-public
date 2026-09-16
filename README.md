@@ -55,6 +55,16 @@ placement-helper/
 
 ---
 
+## Screenshots
+
+### All Drives Page
+
+![Placement Helper — All Drives](screenshots/placement-helper-all-drives.png)
+
+The "All Drives" page showing upcoming placement drives with time remaining, drive type filters, and status tabs (All / Open / Registered / Closed). Drives like PBNC PRIVATE LIMITED show hours remaining and notify when the drive date is set.
+
+---
+
 ## Dependencies
 
 | Package | Purpose |
