@@ -1,0 +1,41 @@
+{
+  "appId": "com.placement.helper",
+  "productName": "Placement Helper",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "**/*",
+    "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+    "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+    "!**/node_modules/*.d.ts",
+    "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj,map}",
+    "!.editorconfig",
+    "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+    "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+    "!**/{appveyor.yml,.travis.yml,circle.yml}",
+    "!**/{npm-debug.log,yarn.lock,package-lock.json,.yarn-integrity,.yarn-metadata.json,yarn-error.log}"
+  ],
+  "asar": true,
+  "asarUnpack": [
+    "**/*.node"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "dashboard/icon.ico"
+  },
+  "nsis": {
+    "oneClick": true,
+    "perMachine": false,
+    "allowElevation": true,
+    "deleteAppDataOnUninstall": false,
+    "installerIcon": "dashboard/icon.ico",
+    "uninstallerIcon": "dashboard/icon.ico"
+  },
+  "publish": null
+}

@@ -1,0 +1,28 @@
+{
+  "name": "placement-helper",
+  "version": "1.0.1",
+  "description": "LPU Placement Drive Dashboard & Pipeline",
+  "main": "dashboard/main.js",
+  "scripts": {
+    "install-all": "npm install && npm install --prefix dashboard",
+    "start": "npm start --prefix dashboard",
+    "dev": "npm run dev --prefix dashboard",
+    "obfuscate": "node obfuscate.js",
+    "build": "node build.js",
+    "pack": "npx electron-builder --win --x64 --dir",
+    "dist": "npx electron-builder --win --x64",
+    "clean": "node -e \"const fs=require('fs');['dist','build-src'].forEach(d=>{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true});console.log('Cleaned '+d)})\""
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.5.0",
+    "electron-updater": "^6.1.7",
+    "posthog-node": "^4.0.0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^25.1.8",
+    "javascript-obfuscator": "^4.1.1"
+  }
+}

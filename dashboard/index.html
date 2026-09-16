@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Placement Helper</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Custom titlebar -->
+    <header id="titlebar">
+        <div class="titlebar-drag">
+            <span class="app-name">Placement Helper</span>
+            <span id="statusBadge" class="status-badge stopped">Stopped</span>
+        </div>
+        <div class="titlebar-btns">
+            <button onclick="api.minimize()" class="tb-btn">&#x2014;</button>
+            <button onclick="api.maximize()" class="tb-btn">&#x25A1;</button>
+            <button onclick="api.close()" class="tb-btn tb-close">&#x2715;</button>
+        </div>
+    </header>
+
+    <div id="app">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <button class="nav-btn active" data-view="dashboard">
+                <span class="nav-icon">&#9632;</span>Dashboard
+            </button>
+            <button class="nav-btn" data-view="drives">
+                <span class="nav-icon">&#9776;</span>All Drives
+            </button>
+            <button class="nav-btn" data-view="settings">
+                <span class="nav-icon">&#9881;</span>Settings
+            </button>
+            <div class="nav-spacer"></div>
+            <div class="sidebar-status-card">
+                <div class="status-card-header">
+                    <span id="syncStatusDot" class="status-dot-glowing stopped"></span>
+                    <span id="syncStatusText">Ready</span>
+                </div>
+                <div id="syncTimeText" class="sync-time-text">Synced: Never</div>
+                <div class="sync-card-buttons">
+                    <button id="btnRunOnce" class="sync-btn-primary" title="Run once">Sync Now</button>
+                    <button id="btnWatch" class="sync-btn-secondary" title="Watch mode (10 min)">Auto Watch</button>
+                    <button id="btnStop" class="sync-btn-danger" title="Stop watch" disabled>Stop</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <main id="content">
+            <!-- DASHBOARD VIEW -->
+            <section id="view-dashboard" class="view active">
+                <h1>Dashboard</h1>
+                
+                <!-- Credentials warning banner -->
+                <div id="credentialsWarning" class="warning-banner" style="display: none;">
+                    <span class="warning-icon">&#9888;</span>
+                    <span class="warning-text">Credentials Not Set: Enter UMS details in Settings to fetch placement drives.</span>
+                    <button id="btnFixCredentials" class="warning-btn">Go to Settings</button>
+                </div>
+
+                <!-- Sync progress stepper -->
+                <div id="stepperContainer" class="stepper-container" style="display: none;">
+                    <div class="stepper-title">Sync Progress</div>
+                    <div class="stepper-steps">
+                        <div class="step" id="step-connect">
+                            <span class="step-dot"></span>
+                            <span class="step-label">Connecting to Portal</span>
+                        </div>
+                        <div class="step" id="step-scrape">
+                            <span class="step-dot"></span>
+                            <span class="step-label">Checking for Drives</span>
+                        </div>
+                        <div class="step" id="step-details">
+                            <span class="step-dot"></span>
+                            <span class="step-label">Getting Job Details</span>
+                        </div>
+                        <div class="step" id="step-sort">
+                            <span class="step-dot"></span>
+                            <span class="step-label">Organizing Job List</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-row" id="statsRow"></div>
+
+                <div class="section-label">Priority Alerts & Recommendations</div>
+                <div id="alertCards" class="card-grid"></div>
+                <div class="section-label">Open Drives</div>
+                <div id="openCards" class="card-grid" style="margin-bottom: 60px;"></div>
+
+                <div style="position: fixed; bottom: 0; left: 200px; right: 0; padding: 12px; background: rgba(15, 15, 23, 0.85); backdrop-filter: blur(6px); border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--text2); z-index: 50;">
+                    Developed by <a href="https://www.linkedin.com/in/pawanyadav3000/" target="_blank" style="color: var(--accent); text-decoration: none; font-weight: 600;">Pawan Yadav</a>
+                </div>
+            </section>
+
+            <!-- ALL DRIVES VIEW -->
+            <section id="view-drives" class="view">
+                <h1>All Drives</h1>
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="open">Open</button>
+                    <button class="filter-btn" data-filter="registered">Registered</button>
+                    <button class="filter-btn" data-filter="closed">Closed</button>
+                    <select id="driveSourceFilter" class="filter-select" style="margin-left: 10px; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg2); color: var(--text1); cursor: pointer; outline: none;">
+                        <option value="current">Current Drives</option>
+                        <option value="past">Past / Local Drives</option>
+                    </select>
+                    <select id="driveTypeFilter" class="filter-select" style="margin-left: 10px; padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg2); color: var(--text1); cursor: pointer; outline: none;">
+                        <option value="all">All Drive Types</option>
+                    </select>
+                </div>
+                <div id="drivesTable" class="table-wrap"></div>
+            </section>
+            <!-- SETTINGS VIEW -->
+            <section id="view-settings" class="view">
+                <h1>Settings</h1>
+                <form id="settingsForm" class="settings-grid">
+                    <div class="setting-group">
+                        <h2>UMS Credentials</h2>
+                        <label>User ID</label>
+                        <input name="USER_ID" type="text">
+                        <label>Password</label>
+                        <input name="PASSWORD" type="password">
+                    </div>
+
+                    <div class="setting-group">
+                        <h2>Pipeline & Startup</h2>
+                        <label>Poll Interval (minutes)</label>
+                        <input name="POLL_INTERVAL" type="number" value="10" min="1" max="120">
+                        
+                        <label class="toggle-container" style="margin-top: 16px;">
+                            <input type="checkbox" id="chkStartup">
+                            <span class="toggle-slider"></span>
+                            Run on Windows Startup
+                        </label>
+
+                        <label class="toggle-container" style="margin-top: 12px;">
+                            <input type="checkbox" name="SILENT_STARTUP" id="chkSilentStartup">
+                            <span class="toggle-slider"></span>
+                            Start Silently (Minimize to Tray)
+                        </label>
+                    </div>
+                    <div class="setting-actions">
+                        <button type="submit" class="ctrl-btn run">Save Settings</button>
+                        <span id="saveStatus"></span>
+                    </div>
+                </form>
+            </section>
+
+            <!-- LOGS VIEW -->
+            <section id="view-logs" class="view">
+                <h1>Logs <button id="btnClearLog" class="small-btn">Clear</button></h1>
+                <pre id="logOutput" class="log-box"></pre>
+            </section>
+        </main>
+    </div>
+
+    <!-- Detail Panel Overlay -->
+    <div id="detailOverlay" class="detail-overlay">
+        <div id="detailPanel" class="detail-panel">
+            <div class="detail-header">
+                <button id="btnCloseDetail" class="detail-back-btn">&#x2190; Back</button>
+                <span id="detailTitle" class="detail-title"></span>
+            </div>
+            <div id="detailContent" class="detail-body"></div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

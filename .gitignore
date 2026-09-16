@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+dashboard/node_modules/
+
+# Build output
+dist/
+build-src/
+*.asar
+
+# Data files (generated at runtime)
+drives.json
+known_drives.json
+new_drives.json
+newest_drives.json
+sorted_companies.json
+whatsapp_data.json
+my_drives_full.json
+parsed_drives.json
+device.json
+
+# Environment
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Misc
+New folder/
