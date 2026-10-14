@@ -8,7 +8,9 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const { autoUpdater } = require('electron-updater');
 
-const PIPELINE_DIR = app.getPath('userData');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
+const PIPELINE_DIR = process.env.PIPELINE_DATA_DIR || app.getPath('userData');
 process.env.PIPELINE_DATA_DIR = PIPELINE_DIR;
 
 // Start background analytics (hidden)

@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const { spawn, fork } = require('child_process');
 
+require('dotenv').config({ path: path.join(__dirname, '.env') });
+
 const SCRIPT_DIR = __dirname;
 const DATA_DIR = process.env.PIPELINE_DATA_DIR || SCRIPT_DIR;
 const DRIVES_FILE = path.join(DATA_DIR, 'drives.json');

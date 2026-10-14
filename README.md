@@ -1,5 +1,9 @@
 # Placement Helper
 
+[![Verify](https://github.com/Pawan947/placement-helper-public/actions/workflows/verify.yml/badge.svg)](https://github.com/Pawan947/placement-helper-public/actions/workflows/verify.yml)
+[![Security policy](https://img.shields.io/badge/security-policy-blue.svg)](SECURITY.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **One app to automate your university placement portal — auto-fetch drives, track deadlines, view company details, and register. Everything in one place.**
 
 Placement Helper is a desktop app that replaces manually opening your placement portal every day. It automates the entire flow: fetches drive details automatically, shows company info and deadlines, lets you track status, and register for drives — all from a single dashboard. No more copy-pasting drive links or refreshing the portal by hand.
@@ -59,6 +63,12 @@ placement-helper/
 
 ## Screenshots
 
+### Dashboard — Stats Overview
+
+![Placement Helper — Dashboard Stats](screenshots/placement-helper-dashboard-stats.png)
+
+Dashboard stats view showing live overview: open drives, registered count, drives closing soon, and approaching deadlines. Priority alerts panel highlights urgent drives — e.g. PBNC PRIVATE LIMITED with registration deadline 17/09/2026 11:00 (13 hours remaining at time of capture). Featured job opportunities and open drives with unannounced dates shown below.
+
 ### Dashboard — Main View
 
 ![Placement Helper — Dashboard](screenshots/placement-helper-dashboard.png)
@@ -77,9 +87,9 @@ The "All Drives" page showing upcoming placement drives with time remaining, dri
 
 | Package | Purpose |
 |---------|---------|
-| `electron` ^28 | Desktop app framework |
-| `electron-builder` ^25 | Windows `.exe` packaging (NSIS installer) |
-| `javascript-obfuscator` ^4 | Source code obfuscation before release |
+| `electron` ^44 | Desktop app framework |
+| `electron-builder` ^26 | Windows `.exe` packaging (NSIS installer) |
+| `javascript-obfuscator` ^5 | Source code obfuscation before release |
 | `axios` ^1.9 | HTTP requests to LPU UMS portal |
 | `cheerio` ^1 | HTML parsing for drive listings |
 | `dotenv` ^16 | Environment variable loading |
@@ -185,7 +195,7 @@ Full build orchestrator:
 
 ### Prerequisites
 
-- **Node.js** (v18+ recommended)
+- **Node.js 22.12 or newer**
 - **npm**
 - **Windows** (for electron-builder NSIS target)
 - **LPU UMS account** — to use the pipeline against your own placement portal
@@ -243,7 +253,7 @@ Create a `.env` in the pipeline data directory (Electron `userData`):
 POSTHOG_API_KEY=your_posthog_project_api_key_here
 ```
 
-Without `POSTHOG_API_KEY`, analytics is a no-op. The placeholder `'YOUR_POSTHOG_API_KEY_HERE'` is used in code — replace with your key or set the env var.
+Without `POSTHOG_API_KEY`, analytics is disabled. When enabled, telemetry is limited to a random local installation ID, operating-system platform, and CPU architecture; usernames, hostnames, IP addresses, and location are not collected.
 
 ---
 
@@ -275,7 +285,7 @@ Select a drive in the dashboard and click **Register** — the pipeline posts th
 
 ### PostHog API key
 
-The PostHog key is read from `process.env.POSTHOG_API_KEY`. The code contains only a placeholder `'YOUR_POSTHOG_API_KEY_HERE'`. **Do not commit a real key.** Set it via environment variable before running the app.
+The optional PostHog key is read from `process.env.POSTHOG_API_KEY`. Without it, analytics stays disabled. When enabled, the app sends only a random installation ID, OS platform, and CPU architecture. **Do not commit a real key.**
 
 ### LPU UMS session
 

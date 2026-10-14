@@ -1,63 +1,52 @@
 const { PostHog } = require('posthog-node')
-const axios = require('axios')
 const os = require('os')
 const crypto = require('crypto')
 const fs = require('fs')
 const path = require('path')
 
-const posthog = new PostHog(
-  process.env.POSTHOG_API_KEY || 'YOUR_POSTHOG_API_KEY_HERE',
-  {
-    host: 'https://us.i.posthog.com'
-  }
-)
+require('dotenv').config({ path: path.join(__dirname, '.env') })
 
-const DATA_DIR = process.env.PIPELINE_DATA_DIR || __dirname;
-const FILE = path.join(DATA_DIR, 'device.json');
+const posthogKey = process.env.POSTHOG_API_KEY
 
-let userId
-
-if (fs.existsSync(FILE)) {
-  userId = JSON.parse(fs.readFileSync(FILE)).id
+if (!posthogKey) {
+  console.log('Analytics disabled (POSTHOG_API_KEY is not set)')
 } else {
-  userId = crypto.randomUUID()
+  const posthog = new PostHog(posthogKey, {
+    host: 'https://us.i.posthog.com'
+  })
 
-  fs.writeFileSync(
-    FILE,
-    JSON.stringify({
-      id: userId
-    })
-  )
-}
+  const dataDir = process.env.PIPELINE_DATA_DIR || __dirname
+  const file = path.join(dataDir, 'device.json')
+  fs.mkdirSync(dataDir, { recursive: true })
 
-async function syncStatus() {
+  let userId
   try {
-    const ipInfo = await axios.get('https://ipapi.co/json/')
-
-    await posthog.capture({
-      distinctId: userId,
-      event: 'app_ping',
-
-      properties: {
-        device_name: os.hostname(),
-        user: os.userInfo().username,
-        network: ipInfo.data.ip,
-        region: ipInfo.data.country_name,
-        area: ipInfo.data.city
-      }
-    })
-
-    console.log('Status updated')
-
-  } catch (err) {
-    console.log('Background service active')
+    userId = JSON.parse(fs.readFileSync(file, 'utf8')).id
+  } catch {
+    userId = crypto.randomUUID()
+    fs.writeFileSync(file, JSON.stringify({ id: userId }))
   }
+
+  async function syncStatus() {
+    try {
+      await posthog.capture({
+        distinctId: userId,
+        event: 'app_ping',
+        properties: {
+          platform: os.platform(),
+          architecture: os.arch()
+        }
+      })
+    } catch {
+      console.log('Analytics delivery failed')
+    }
+  }
+
+  syncStatus()
+  const interval = setInterval(syncStatus, 30 * 60 * 1000)
+
+  process.on('beforeExit', async () => {
+    clearInterval(interval)
+    await posthog.shutdown()
+  })
 }
-
-syncStatus()
-
-setInterval(syncStatus, 30000)
-
-process.on('exit', async () => {
-  await posthog.shutdown()
-})
